@@ -12,7 +12,11 @@ authors = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
+numpy = "^2.2.4"
+torch = "^2.6.0"
+requests = "^2.32.3"
+scipy = "^1.15.2"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2"
