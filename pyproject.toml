@@ -25,6 +25,7 @@ altair = "^5.5.0"
 plotly = "^6.0.1"
 pydeck = "^0.9.1"
 jupyter = "^1.1.1"
+scikit-learn = "^1.6.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2"
