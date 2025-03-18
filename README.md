@@ -1,8 +1,8 @@
-### DTSC - BRAIN elia-hackaton solution
+# DTSC - BRAIN elia-hackaton solution
 
 This repository contains the solution for the elia-hackaton 2025 challenge.
 
-## Cloning the Repository
+### Cloning the Repository
 
 Install `poetry`:
 ```sh
