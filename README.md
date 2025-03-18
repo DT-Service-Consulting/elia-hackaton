@@ -10,11 +10,14 @@ Install poetry
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-Clone, access and install the package
+Clone the repository
 
 ```sh
-git clone git@github.com:DT-Service-Consulting/elia-hackaton.git
+git git clone https://github.com/DT-Service-Consulting/elia-hackaton.git
+```
 
+Access the folder and install the package with `poetry`
+```sh
 cd elia-hackaton
 
 poetry install
