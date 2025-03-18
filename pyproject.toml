@@ -11,7 +11,7 @@ authors = [
 python = "^3.8"
 # Add other dependencies here
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 pytest = "^6.2"
 
 [build-system]
