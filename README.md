@@ -33,3 +33,18 @@ source .venv/bin/activate
 ```sh
 poetry run pytest --cov=elia_hackaton --cov-report=html
 ```
+
+## Troubleshooting poetry
+
+If you find an error such as this:
+```sh
+/bin/bash: line 1: poetry: command not found
+```
+it means that poetry is not in your PATH. Try the following:
+```sh
+# find poetry executable
+find ~ -name poetry -type f 
+
+# add the path to your .bashrc or .zshrc (macOS)
+echo 'export PATH="$PATH:/path/to/poetry"' >> ~/.bashrc
+```
