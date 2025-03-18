@@ -26,6 +26,11 @@ Activate the local environment:
 source .venv/bin/activate
 ```
 
+## Running the app
+
+```sh
+poetry run  streamlit run elia_hackaton/dashboard.py
+```
 ## Running the tests
 
 ```sh
