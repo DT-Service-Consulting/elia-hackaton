@@ -7,7 +7,6 @@ from elia_hackaton.config import DATA_DIR
 st.title("Interactive Map of Belgium 🇧🇪")
 
 equipment_df = pd.read_csv(DATA_DIR / 'Equipment.csv', index_col=0)
-print(equipment_df["Latitude"].mean(), equipment_df["Longitude"].mean())
 
 # Define a scatterplot layer to display on a map
 scatterplot_layer = pdk.Layer(
