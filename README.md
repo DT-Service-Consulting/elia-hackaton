@@ -10,7 +10,7 @@ Install poetry
 curl -sSL https://install.python-poetry.org | python3 -
 ```
 
-Clone the repository
+Clone, access and install the package
 
 ```sh
 git clone git@github.com:DT-Service-Consulting/elia-hackaton.git
@@ -18,9 +18,11 @@ git clone git@github.com:DT-Service-Consulting/elia-hackaton.git
 cd elia-hackaton
 
 poetry install
-
-poetry run python -m elia_hackaton
-
 ```
+
+Activate the local environment
+```sh
+source .venv/bin/activate
+``
 
 
