@@ -1,18 +1,22 @@
 [tool.poetry]
 name = "elia-hackaton"
 version = "0.1.0"
-description = "Solution for the elia-hackaton 2025 challenge"
+description = "Solution for the elia-hackaton 2025 challenge by DTSC-BRAIN"
 authors = [
     "Marco Di Gennaro <marco.digennaro@dtsc.be>",
     "Melih Taki <melih.taki@dtsc.be>",
+    "Adrien Dewalque <adrien.dewalque@dtsc.be>",
+    "Samuel Aulotte <samuel.aulotte@dtsc.be>",
+    "Shreya Bhattacharaya <shreya.bhattacharaya@dtsc.be>",
+    "Mike Dauphinais <mike.dauphinais@dtsc.be>",
 ]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-# Add other dependencies here
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^6.2"
+pytest-cov = "^2.11"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -23,6 +23,10 @@ poetry install
 Activate the local environment
 ```sh
 source .venv/bin/activate
-``
+```
 
+## Running the tests
 
+```sh
+poetry run pytest --cov=elia_hackaton --cov-report=html
+```
