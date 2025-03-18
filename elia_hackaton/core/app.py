@@ -37,5 +37,6 @@ view_state = pdk.ViewState(
 )
 
 # Render the deck.gl map
-r = pdk.Deck(layers=[scatterplot_layer, text_layer], initial_view_state=view_state)
+r = pdk.Deck(layers=[scatterplot_layer, text_layer],
+             initial_view_state=view_state)
 st.pydeck_chart(r)

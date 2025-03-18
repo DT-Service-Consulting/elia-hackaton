@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch
 
+
 class basic_model(nn.Module):
     def __init__(self):
         """
@@ -71,6 +72,7 @@ class PINN(nn.Module):
         torch.Tensor: Output tensor after passing through the network.
         """
         return self.model(x)
+
 
 class Transformer:
     def __init__(self, load, latitude, longitude, nn_params=None):

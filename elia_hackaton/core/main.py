@@ -1,3 +1,4 @@
+from elia_hackaton.config import DATA_DIR
 import numpy as np
 import pandas as pd
 import torch
@@ -7,7 +8,7 @@ from scipy.optimize import linprog
 
 from elia_hackaton.core import fetch_data
 
-#fetch_data()
+# fetch_data()
 import torch
 
 if torch.cuda.is_available():
@@ -19,7 +20,6 @@ else:
 
 print(f"Using device: {device}")
 
-from elia_hackaton.config import DATA_DIR
 print(DATA_DIR)
 equipment = pd.read_csv(DATA_DIR / 'Equipment.csv', index_col=0)
 print(equipment)

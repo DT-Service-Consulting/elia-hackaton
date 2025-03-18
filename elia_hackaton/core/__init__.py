@@ -1,7 +1,8 @@
 # Fetch Real-Time Data
 def fetch_data(substation):
     try:
-        transformer_response = requests.get(f"{TRANSFORMER_API_URL}?substation={substation}")
+        transformer_response = requests.get(
+            f"{TRANSFORMER_API_URL}?substation={substation}")
         weather_response = requests.get(WEATHER_API_URL)
 
         if transformer_response.status_code == 200 and weather_response.status_code == 200:

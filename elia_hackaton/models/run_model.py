@@ -21,14 +21,15 @@ else:
 
 print(f"Using device: {device}")
 
-df = pd.read_csv( DATA_DIR / 'final_merged_data.csv')
+df = pd.read_csv(DATA_DIR / 'final_merged_data.csv')
 df = df.sample(1000)
 
 # Selecting relevant features, including weather data
 features = ["nominalLoad", "heatRunTest_noLoadLosses", "heatRunTest_copperLosses",
             "heatRunTest_ambiantTemperature", "heatRunTest_deltaTopOil",
             "heatRunTest_x", "heatRunTest_y", "heatRunTest_h", "heatRunTest_gradient",
-            "load", "heatRunTest_ambiantTemperature"]  # Including ambient temperature as weather data
+            # Including ambient temperature as weather data
+            "load", "heatRunTest_ambiantTemperature"]
 target = "hotspotTemperature"
 
 
@@ -41,7 +42,8 @@ y_scaler = MinMaxScaler()
 y = y_scaler.fit_transform(y)
 
 # Train-test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
 
 # Convert to PyTorch tensors
 X_train_tensor = torch.tensor(X_train, dtype=torch.float32)
@@ -58,7 +60,8 @@ best_rmse = float("inf")
 best_params = None
 
 for hidden_layers, neurons, lr in product(hidden_layer_options, neuron_options, learning_rate_options):
-    model = PINN(input_size=len(features), hidden_layers=hidden_layers, neurons=neurons)
+    model = PINN(input_size=len(features),
+                 hidden_layers=hidden_layers, neurons=neurons)
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=lr)
 
