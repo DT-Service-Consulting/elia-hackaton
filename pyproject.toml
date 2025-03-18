@@ -1,21 +1,19 @@
-[project]
+[tool.poetry]
 name = "elia-hackaton"
 version = "0.1.0"
-description = ""
+description = "Solution for the elia-hackaton 2025 challenge"
 authors = [
-    {name = "Marco",email = "marco@mdigennaro.net"}
-]
-readme = "README.md"
-requires-python = ">=3.13"
-dependencies = [
-    "pep8 (>=1.7.1,<2.0.0)",
-    "pytest (>=8.3.5,<9.0.0)"
+    "Marco Di Gennaro <marco.digennaro@dtsc.be>",
+    "Melih Taki <melih.taki@dtsc.be>",
 ]
 
-[tool.poetry]
-packages = [{include = "elia_hackaton", from = "src"}]
+[tool.poetry.dependencies]
+python = "^3.8"
+# Add other dependencies here
 
+[tool.poetry.dev-dependencies]
+pytest = "^6.2"
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

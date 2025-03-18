@@ -4,13 +4,18 @@ This repository contains the solution for the elia-hackaton 2025 challenge.
 
 ## Cloning the Repository
 
-To clone the repository, run the following command:
-
+Install poetry
 ```sh
-git clone https://github.com/your-username/elia-hackaton.git
-cd elia-hackaton
 
 curl -sSL https://install.python-poetry.org | python3 -
+```
+
+Clone the repository
+
+```sh
+git clone git@github.com:DT-Service-Consulting/elia-hackaton.git
+
+cd elia-hackaton
 
 poetry install
 
