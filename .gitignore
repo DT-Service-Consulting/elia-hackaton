@@ -126,4 +126,13 @@ Temporary Items
 poetry.lock
 .poetry/
 
+# Streamlit cache and logs
+.streamlit/
+__pycache__/
+.stcache/
+.stcache/*
+.ststreamlit/
+.history/
+.logs/
+
 # End of file
