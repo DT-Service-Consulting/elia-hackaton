@@ -11,11 +11,29 @@ from elia_hackaton.models.models import Prometheus
 from elia_hackaton.config import api_url, headers
 from elia_hackaton.config import DATA_DIR
 from elia_hackaton.config import start_date_x, end_date_x, start_date_y, end_date_y
+from elia_hackaton.core.utils import setup_gpu
+
+device = setup_gpu()
 
 
 def get_data_from_api(api_url, data_extension, headers):
+    """
+    Fetch data from the specified API endpoint.
+
+    This function makes a GET request to the given API URL with the provided data extension and headers.
+    It checks the response status and returns the parsed JSON data if the request is successful.
+
+    Parameters:
+    api_url (str): The base URL of the API.
+    data_extension (str): The specific endpoint extension to append to the base URL.
+    headers (dict): A dictionary of HTTP headers to include in the request.
+
+    Returns:
+    dict or None: The parsed JSON data from the API response if successful, otherwise None.
+    """
     # Make the GET request to the API
     response = requests.get(api_url + data_extension, headers=headers)
+
     # Check the response status code
     if response.status_code == 200:
         # If the request was successful, parse the JSON response
@@ -29,33 +47,67 @@ def get_data_from_api(api_url, data_extension, headers):
 
 
 def merge_dataframes(equipment_id, load, hotspot_t, outside_t):
-    if (load.empty) or (hotspot_t.empty) or (outside_t.empty):
-        print('Merge is not possible')
+    """
+    Merge load, hotspot temperature, and outside temperature dataframes for a given equipment.
 
-    else:
-        load = load.drop(columns='equipmentId')
-        hotspot_t = hotspot_t.drop(columns='equipmentId')
-        outside_t = outside_t.drop(columns='locationId')
-        merged_df = pd.merge(load, outside_t, on='dateTime', how='left')
-        merged_df = merged_df.fillna(method='ffill')
-        merged_df = pd.merge(merged_df, hotspot_t, on=['dateTime'], how='left')
-        merged_df.to_csv(DATA_DIR / 'all_time_series' / f'{str(equipment_id)}.csv')
+    This function merges the provided dataframes on the 'dateTime' column, fills missing values
+    using forward fill, and saves the merged dataframe to a CSV file.
 
-        return merged_df
+    Parameters:
+    equipment_id (int): The identifier of the equipment.
+    load (pd.DataFrame): DataFrame containing the load data.
+    hotspot_t (pd.DataFrame): DataFrame containing the hotspot temperature data.
+    outside_t (pd.DataFrame): DataFrame containing the outside temperature data.
+
+    Returns:
+    pd.DataFrame: The merged dataframe containing all the data.
+    """
+    if load.empty or hotspot_t.empty or outside_t.empty:
+        print('Merge is not possible due to empty dataframes.')
+        return None
+
+    # Drop unnecessary columns
+    load = load.drop(columns='equipmentId', errors='ignore')
+    hotspot_t = hotspot_t.drop(columns='equipmentId', errors='ignore')
+    outside_t = outside_t.drop(columns='locationId', errors='ignore')
+
+    # Merge dataframes on 'dateTime' column
+    merged_df = pd.merge(load, outside_t, on='dateTime', how='left')
+    merged_df = merged_df.fillna(method='ffill')
+    merged_df = pd.merge(merged_df, hotspot_t, on='dateTime', how='left')
+
+    # Save the merged dataframe to a CSV file
+    output_path = DATA_DIR / 'all_time_series' / f'{equipment_id}.csv'
+    merged_df.to_csv(output_path, index=False)
+    print(f'Merged dataframe saved to {output_path}')
+
+    return merged_df
 
 
 def get_load(equipment_id, end_date_x):
-    # Get Load
-    global df_load
+    """
+    Fetch and save the load data for a given equipment.
+
+    This function requests the load data from the API for the specified equipment and date range.
+    It saves the data to a CSV file if the request is successful.
+
+    Parameters:
+    equipment_id (int): The identifier of the equipment.
+    end_date_x (str): The end date for the data request in 'YYYY-MM-DD' format.
+
+    Returns:
+    pd.DataFrame: The DataFrame containing the load data if successful, otherwise None.
+    """
     data_requested = f'equipment/GetTransformerLoad?equipmentId={equipment_id}&fromDate={start_date_x}&toDate={end_date_x}'
     load_data = get_data_from_api(api_url, data_requested, headers)
 
-    if load_data is not None:
-        print(str(equipment_id) + ': Success Load!')
-        df_load = pd.DataFrame(load_data)
-        df_load.to_csv(DATA_DIR / 'load' / f'{str(equipment_id)}.csv')
+    if load_data is None:
+        print(f'{equipment_id}: ERROR Load!')
+        df_load = None
     else:
-        print(str(equipment_id) + ': ERROR Load!')
+        print(f'{equipment_id}: Success Load!')
+        df_load = pd.DataFrame(load_data)
+        df_load.to_csv(DATA_DIR / 'load' / f'{equipment_id}.csv', index=False)
 
     return df_load
 
