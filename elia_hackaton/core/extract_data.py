@@ -38,11 +38,9 @@ def get_data_from_api(api_url, data_extension, headers):
     if response.status_code == 200:
         # If the request was successful, parse the JSON response
         data = response.json()
-        print(data)
         return data
     else:
         # If the request failed
-        print(response)
         return None
 
 
