@@ -107,3 +107,45 @@ class Transformer:
         dict: The neural network parameters.
         """
         return self.nn_params
+
+
+class Prometheus(nn.Module):
+    def __init__(self, input_dim=5, hidden_dim=128, layers=4):
+        super(Prometheus, self).__init__()
+
+        self.input_dim = input_dim
+        self.hidden_dim = hidden_dim
+        self.num_layers = layers
+
+        self.input_layer = nn.Linear(input_dim, hidden_dim)
+
+        # Multiple hidden layers with residual connections
+        self.hidden_layers = nn.ModuleList([
+            nn.Linear(hidden_dim, hidden_dim) for _ in range(layers)
+        ])
+
+        self.output_layer = nn.Linear(hidden_dim, 1)
+        self.activation = nn.LeakyReLU(0.1)
+        self.dropout = nn.Dropout(0.1)
+
+    def get_config(self):
+        """Return model configuration as a dictionary"""
+        return {
+            'input_dim': self.input_dim,
+            'hidden_dim': self.hidden_dim,
+            'layers': self.num_layers
+        }
+
+    def forward(self, x):
+        # First layer
+        h = self.activation(self.input_layer(x))
+
+        # Hidden layers with residual connections
+        for layer in self.hidden_layers:
+            h_new = self.activation(layer(h))
+            h = h + h_new  # Residual connection
+            h = self.dropout(h)
+
+        # Output layer
+        output = self.output_layer(h)
+        return output

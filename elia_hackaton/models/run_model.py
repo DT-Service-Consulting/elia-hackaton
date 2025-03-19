@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error
 from itertools import product
-from elia_hackaton.models.classes import PINN
+from elia_hackaton.models.models import PINN
 from elia_hackaton.config import DATA_DIR
 from elia_hackaton.core.utils import white_box_model
 
