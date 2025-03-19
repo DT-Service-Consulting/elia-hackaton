@@ -112,10 +112,16 @@ from elia_hackaton.config import RESULTS_DIR
 # First pass: Train models and save them
 print(RESULTS_DIR)
 
+epochs = 2000
+epochs = 20
+
 for filename in os.listdir(RESULTS_DIR):
     if filename.endswith(".csv"):
         file_path = RESULTS_DIR / filename
         equipment_df = pd.read_csv(file_path)
+        print('Reducing size here... ')
+        equipment_df = equipment_df.sample(1000)
+
         equipment_name = filename.split('.csv')[0]
         
         print(f"\nProcessing {equipment_name}...")
@@ -207,15 +213,18 @@ for filename in os.listdir(RESULTS_DIR):
         mse_loss = nn.MSELoss()
         
         # Training loop
-        epochs = 2000
         best_val_loss = float('inf')
         patience = 50
         counter = 0
         train_losses = []
         val_losses = []
-        
+
+        best_model_path = DATA_DIR / 'best_models' / f'best_model_{equipment_name}.pth'
+        print('Model will be saved to ', best_model_path)
         for epoch in range(epochs):
             model.train()
+            #save first model
+            torch.save(model.state_dict(), best_model_path)
             epoch_loss = 0
             
             for batch_X, batch_y, batch_whitebox, batch_k in train_loader:
@@ -265,7 +274,7 @@ for filename in os.listdir(RESULTS_DIR):
                     best_val_loss = val_loss
                     counter = 0
                     # Save best model
-                    torch.save(model.state_dict(), f'best_model_{equipment_name}.pth')
+                    torch.save(model.state_dict(), best_model_path)
                 else:
                     counter += 1
                     if counter >= patience:
@@ -273,7 +282,9 @@ for filename in os.listdir(RESULTS_DIR):
                         break
         
         # Load best model for evaluation
-        model.load_state_dict(torch.load(f'best_model_{equipment_name}.pth'))
+        print('Reading: ', best_model_path)
+
+        model.load_state_dict(torch.load(best_model_path))
         model.eval()
         
         # Save model with all necessary components for prediction
