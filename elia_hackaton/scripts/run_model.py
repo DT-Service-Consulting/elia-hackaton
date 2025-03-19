@@ -10,28 +10,14 @@ from itertools import product
 from elia_hackaton.models.models import PINN
 from elia_hackaton.config import DATA_DIR
 from elia_hackaton.core.utils import white_box_model
+from elia_hackaton.scripts.feature_engineering import features, target
 
-
-if torch.cuda.is_available():
-    device = torch.device("cuda")  # Use NVIDIA GPU
-elif torch.backends.mps.is_available():
-    device = torch.device("mps")  # Use Apple Metal (macOS)
-else:
-    device = torch.device("cpu")  # Default to CPU
-
-print(f"Using device: {device}")
+"""
+Old jupyter notebook code: not useful ATM
+"""
 
 df = pd.read_csv(DATA_DIR / 'final_merged_data.csv')
 df = df.sample(1000)
-
-# Selecting relevant features, including weather data
-features = ["nominalLoad", "heatRunTest_noLoadLosses", "heatRunTest_copperLosses",
-            "heatRunTest_ambiantTemperature", "heatRunTest_deltaTopOil",
-            "heatRunTest_x", "heatRunTest_y", "heatRunTest_h", "heatRunTest_gradient",
-            # Including ambient temperature as weather data
-            "load", "heatRunTest_ambiantTemperature"]
-target = "hotspotTemperature"
-
 
 # Normalize data
 scaler = MinMaxScaler()
