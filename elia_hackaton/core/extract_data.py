@@ -1,3 +1,5 @@
+import os.path
+
 import pandas as pd
 import requests
 import warnings
@@ -39,9 +41,10 @@ def merge_dataframes(equipment_id, load, hotspot_t, outside_t):
         merged_df = pd.merge(merged_df, hotspot_t, on=['dateTime'], how='left')
         merged_df.to_csv(DATA_DIR / 'all_time_series' / f'{str(equipment_id)}.csv')
 
+        return merged_df
+
 
 def get_load(equipment_id, end_date_x):
-
     # Get Load
     global df_load
     data_requested = f'equipment/GetTransformerLoad?equipmentId={equipment_id}&fromDate={start_date_x}&toDate={end_date_x}'
@@ -55,6 +58,7 @@ def get_load(equipment_id, end_date_x):
         print(str(equipment_id) + ': ERROR Load!')
 
     return df_load
+
 
 def get_outside_temperature(location_id, end_date_x, equipment_id):
     # Get Outside Temperature
@@ -90,17 +94,21 @@ def get_hotspot_temperature(equipment_id, end_date_y):
 
     return df_hotspot_temperature
 
+
 def get_data_locally(df_tfo):
     for _, row in df_tfo.iterrows():
+        equipment_csv = DATA_DIR / 'all_time_series' / f'{str(row["equipmentId"])}.csv'
+        if not os.path.exists(equipment_csv):
+            equipment_id = row['equipmentId']
+            location_id = row['locationId']
 
-        equipment_id = row['equipmentId']
-        location_id = row['locationId']
+            df_load = get_load(equipment_id, end_date_x)
+            df_outside_temperature = get_outside_temperature(location_id, end_date_x, equipment_id)
+            df_hotspot_temperature = get_hotspot_temperature(equipment_id, end_date_y)
 
-        df_load = get_load(equipment_id, end_date_x)
-        df_outside_temperature = get_outside_temperature(location_id, end_date_x, equipment_id)
-        df_hotspot_temperature = get_hotspot_temperature(equipment_id, end_date_y)
-
-        merge_dataframes(equipment_id, df_load, df_hotspot_temperature, df_outside_temperature)
+            merged_df = merge_dataframes(equipment_id, df_load, df_hotspot_temperature, df_outside_temperature)
+            merged_df.to_csv(DATA_DIR / 'all_time_series' / f'{str(equipment_id)}.csv')
+    return
 
 
 def post_data(json_data, api_url="https://your-api-endpoint.com/data"):
