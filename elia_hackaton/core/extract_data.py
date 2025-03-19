@@ -1,17 +1,15 @@
 import pandas as pd
 import requests
 import warnings
+import os
+import json
+from elia_hackaton.config import api_key, api_url
+
 warnings.filterwarnings("ignore")
 
-# Define the API endpoint and your API key
-api_url = "https://api-nprd.traxes.io/hackathon/" 
-api_key = "a47c28cc-9401-450f-b052-db23dccb26c5"
 
-# Set up the headers with your API key
-headers = {
-    "x-api-key": api_key,
-    "Content-Type": "application/json"
-}
+
+
 def get_data(api_url, data_extension, headers):
     # Make the GET request to the API
     response = requests.get(api_url + data_extension, headers=headers)
@@ -25,37 +23,22 @@ def get_data(api_url, data_extension, headers):
         # If the request failed
         print(response)
         return None
-data_requested = 'equipment/GetAllTransformers/'
 
-tfo_data = get_data(api_url, data_requested, headers)
 
-if tfo_data != None:
-    df_tfo = pd.DataFrame(tfo_data)
-else:
-    print('Error')
 
-print("Success")
 
-df_tfo_extra = pd.json_normalize(df_tfo['heatRunTest'])
-
-df_tfo = pd.concat([df_tfo.drop(columns=['heatRunTest']), df_tfo_extra], axis=1)
-df_tfo
-
-df_tfo.to_csv('tfo_parameters.csv')
-
-def merge_dataframes(equipment_id, load,hotspot_t,outside_t):
+def merge_dataframes(equipment_id, load, hotspot_t, outside_t):
     if (load.empty) or (hotspot_t.empty) or (outside_t.empty):
         print('Merge is not possible')
 
     else:
-        load = load.drop(columns = 'equipmentId')
-        hotspot_t = hotspot_t.drop(columns = 'equipmentId')
-        outside_t = outside_t.drop(columns = 'locationId')
-        merged_df = pd.merge(load, outside_t, on = 'dateTime', how = 'left')
+        load = load.drop(columns='equipmentId')
+        hotspot_t = hotspot_t.drop(columns='equipmentId')
+        outside_t = outside_t.drop(columns='locationId')
+        merged_df = pd.merge(load, outside_t, on='dateTime', how='left')
         merged_df = merged_df.fillna(method='ffill')
-        merged_df = pd.merge(merged_df, hotspot_t, on=['dateTime'], how = 'left')
+        merged_df = pd.merge(merged_df, hotspot_t, on=['dateTime'], how='left')
         merged_df.to_csv('all_time_series/' + str(equipment_id) + '.csv')
-
 
 
 start_date_x = '2023-05-01'
@@ -69,11 +52,11 @@ for _, row in df_tfo.iterrows():
 
     equipment_id = row['equipmentId']
     location_id = row['locationId']
-    
+
     # Get Load
 
     data_requested = f'equipment/GetTransformerLoad?equipmentId={equipment_id}&fromDate={start_date_x}&toDate={end_date_x}'
-    
+
     load_data = get_data(api_url, data_requested, headers)
 
     if load_data != None:
@@ -86,7 +69,7 @@ for _, row in df_tfo.iterrows():
     # Get Outside Temperature
 
     data_requested = f'weather/GetOutsideTemperature?locationId={location_id}&fromDate={start_date_x}&toDate={end_date_x}'
-    
+
     temperature_outside_data = get_data(api_url, data_requested, headers)
 
     if temperature_outside_data != None:
@@ -107,8 +90,6 @@ for _, row in df_tfo.iterrows():
         df_hotspot_temperature.to_csv('hotspot_temperature/' + str(equipment_id) + '.csv')
     else:
         print(str(equipment_id) + ': ERROR Hotspot Temperature!')
-        
-
 
     merge_dataframes(equipment_id, df_load, df_hotspot_temperature, df_outside_temperature)
 
