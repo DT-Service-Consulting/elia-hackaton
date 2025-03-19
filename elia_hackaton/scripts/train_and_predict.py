@@ -9,9 +9,7 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader, TensorDataset
 from sklearn.preprocessing import StandardScaler
 import time
-import pickle
 import json
-import requests
 from elia_hackaton.core.utils import setup_gpu
 from elia_hackaton.config import DATA_DIR, IMAGES_DIR
 from elia_hackaton.models.models import Prometheus
@@ -25,73 +23,6 @@ tfo_parameters_df = pd.read_csv( DATA_DIR/ 'tfo_parameters.csv')
 from elia_hackaton.core.extract_data import save_model_for_prediction, load_model_and_predict, split_dataframe, post_data
 
 # Function to save model with all necessary components for prediction
-"""
-# Function to load model and make predictions
-def load_model_and_predict(equipment_name, input_data):
-    # Load model configuration
-    config_path = os.path.join('saved_models', f'config_{equipment_name}.json')
-    with open(config_path, 'r') as f:
-        config = json.load(f)
-    
-    # Initialize model with saved configuration
-    model = Prometheus(**config).to(device)
-    
-    # Load model weights
-    model_path = os.path.join('saved_models', f'model_{equipment_name}.pth')
-    model.load_state_dict(torch.load(model_path, map_location=device))
-    model.eval()
-    
-    # Load scaler
-    scaler_path = os.path.join('saved_models', f'scaler_{equipment_name}.pkl')
-    with open(scaler_path, 'rb') as f:
-        scaler = pickle.load(f)
-    
-    # Scale input data
-    X_scaled = scaler.transform(input_data)
-    X_tensor = torch.tensor(X_scaled, dtype=torch.float32).to(device)
-    
-    # Make prediction
-    with torch.no_grad():
-        predictions = model(X_tensor).cpu().numpy()
-    
-    return predictions
-
-
-# Split dataframe into chunks for API upload
-def split_dataframe(df, chunk_size):
-    chunks = []
-    num_chunks = len(df) // chunk_size + (1 if len(df) % chunk_size != 0 else 0)
-    
-    for i in range(num_chunks):
-        start_idx = i * chunk_size
-        end_idx = min((i + 1) * chunk_size, len(df))
-        chunks.append(df[start_idx:end_idx].copy())
-    
-    return chunks
-
-
-# Function to post data to API
-def post_data(json_data, api_url="https://your-api-endpoint.com/data"):
-    try:
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer YOUR_API_KEY'  # Replace with your actual API key
-        }
-        
-        response = requests.post(api_url, data=json_data, headers=headers)
-        
-        if response.status_code == 200 or response.status_code == 201:
-            print("Data successfully uploaded to API")
-            return True
-        else:
-            print(f"Error uploading data: Status code {response.status_code}")
-            print(f"Response: {response.text}")
-            return False
-            
-    except Exception as e:
-        print(f"Exception occurred during API upload: {e}")
-        return False
-"""
 
 
 # Directory for storing RMSE and accuracy results
