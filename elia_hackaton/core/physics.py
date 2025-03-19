@@ -1,5 +1,22 @@
+import torch
+
 # Compute Transformer Temperature & Risk Level
+
 def predict_temperature(data):
+    """
+    Predict the temperature of a transformer based on input data.
+
+    Parameters:
+    data (tuple): A tuple containing the following elements:
+        - load_factor (float): The load factor of the transformer.
+        - ambient_temp (float): The ambient temperature.
+        - oil_temp (float): The oil temperature.
+        - humidity (float): The humidity level.
+        - wind_speed (float): The wind speed.
+
+    Returns:
+    float: The predicted temperature of the transformer.
+    """
     load_factor, ambient_temp, oil_temp, humidity, wind_speed = data
     R, x, y = 0.8, 1.2, 0.9  # Transformer Constants
     base_temp = ((1 + R * load_factor**2) / (1 + R))**x * \
@@ -12,7 +29,22 @@ def predict_temperature(data):
 
 
 # Determine Risk Level & Strategy
+
 def evaluate_substation(substation):
+    """
+    Evaluate the risk level of a substation based on predicted temperature.
+
+    Parameters:
+    substation (str): The identifier of the substation.
+
+    Returns:
+    dict: A dictionary containing the evaluation results, including:
+        - Substation (str): The identifier of the substation.
+        - Predicted Temperature (float): The predicted temperature of the transformer.
+        - Max Load (float): The maximum load of the substation.
+        - Current Load (float): The current load of the substation.
+        - Status (str): The risk status of the substation ("Safe", "Warning", or "Critical").
+    """
     data, max_load = fetch_data(substation)
     if data is None:
         return None

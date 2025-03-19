@@ -15,38 +15,6 @@ import requests
 from datetime import datetime
 
 # GPU setup function
-def setup_gpu():
-    if torch.cuda.is_available():
-        # Get GPU information
-        gpu_count = torch.cuda.device_count()
-        print(f"Found {gpu_count} GPU(s):")
-        
-        for i in range(gpu_count):
-            gpu_name = torch.cuda.get_device_name(i)
-            print(f"  GPU {i}: {gpu_name}")
-        
-        # Set device to the first available GPU
-        device = torch.device("cuda:0")
-        
-        # Print CUDA version
-        print(f"CUDA Version: {torch.version.cuda}")
-        
-        # Configure for mixed precision training if available
-        if hasattr(torch.cuda, 'amp') and torch.cuda.is_available():
-            print("Mixed precision training available")
-        else:
-            print("Mixed precision training not available")
-            
-        # Ensure cuDNN is enabled for better performance
-        if torch.backends.cudnn.is_available():
-            torch.backends.cudnn.enabled = True
-            torch.backends.cudnn.benchmark = True
-            print("cuDNN enabled for faster training")
-        
-        return device
-    else:
-        print("No GPU available, using CPU")
-        return torch.device("cpu")
 
 # Call the setup function to configure GPU
 device = setup_gpu()
