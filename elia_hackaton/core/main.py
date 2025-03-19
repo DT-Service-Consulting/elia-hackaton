@@ -1,18 +1,18 @@
 from elia_hackaton.core.utils import setup_gpu
 from elia_hackaton.config import DATA_DIR
+from elia_hackaton.core.extract_data import get_data
+from elia_hackaton.config import api_url, headers
 
 import pandas as pd
 
 device = setup_gpu()
 
 # Load transformer parameters
-tfo_parameters_df = pd.read_csv( DATA_DIR / 'tfo_parameters.csv')
+tfo_parameters_df = pd.read_csv( DATA_DIR / 'tfo_parameters.csv', index_col=0)
 #equipment = pd.read_csv(DATA_DIR / 'Equipment.csv', index_col=0)
 print(tfo_parameters_df)
 
 data_requested = 'equipment/GetAllTransformers/'
-from elia_hackaton.core.extract_data import get_data
-from elia_hackaton.config import api_url, headers
 
 tfo_data = get_data(api_url, data_requested, headers)
 

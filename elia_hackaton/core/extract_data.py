@@ -47,11 +47,20 @@ end_date_x = '2025-02-28T22:00:00'
 start_date_y = '2023-05-01'
 end_date_y = '2024-12-30T23:45:00'
 
+from elia_hackaton.config import api_url, headers
+data_requested = 'equipment/GetAllTransformers/'
+
+tfo_data = get_data(api_url, data_requested, headers)
+df_tfo = pd.DataFrame(tfo_data)
+
+print(df_tfo)
+
 for _, row in df_tfo.iterrows():
     print('\n')
 
     equipment_id = row['equipmentId']
     location_id = row['locationId']
+    print(equipment_id, location_id)
 
     # Get Load
 
