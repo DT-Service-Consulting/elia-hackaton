@@ -13,46 +13,19 @@ import pickle
 import json
 import requests
 from elia_hackaton.core.utils import setup_gpu
-
-# GPU setup function
+from elia_hackaton.config import DATA_DIR, IMAGES_DIR
+from elia_hackaton.models.models import Prometheus
+from elia_hackaton.core.physics import physics_loss
 
 # Call the setup function to configure GPU
 device = setup_gpu()
-from elia_hackaton.config import DATA_DIR, IMAGES_DIR
 # Load transformer parameters
 tfo_parameters_df = pd.read_csv( DATA_DIR/ 'tfo_parameters.csv')
 
-# Define an improved PINN Model
-from elia_hackaton.models.models import Prometheus
-from elia_hackaton.core.physics import physics_loss
-# Physics-informed loss function
+from elia_hackaton.core.extract_data import save_model_for_prediction, load_model_and_predict, split_dataframe, post_data
 
 # Function to save model with all necessary components for prediction
-def save_model_for_prediction(model, scaler, equipment_name, parameters):
-    # Create models directory if it doesn't exist
-    os.makedirs('saved_models', exist_ok=True)
-    
-    # Save model state dictionary
-    model_path = os.path.join('saved_models', f'model_{equipment_name}.pth')
-    torch.save(model.state_dict(), model_path)
-    
-    # Save model architecture configuration
-    config_path = os.path.join('saved_models', f'config_{equipment_name}.json')
-    with open(config_path, 'w') as f:
-        json.dump(model.get_config(), f)
-    
-    # Save scaler
-    scaler_path = os.path.join('saved_models', f'scaler_{equipment_name}.pkl')
-    with open(scaler_path, 'wb') as f:
-        pickle.dump(scaler, f)
-    
-    # Save physics parameters
-    params_path = os.path.join('saved_models', f'params_{equipment_name}.json')
-    with open(params_path, 'w') as f:
-        json.dump(parameters, f)
-    
-    print(f"Model and associated components saved for {equipment_name}")
-
+"""
 # Function to load model and make predictions
 def load_model_and_predict(equipment_name, input_data):
     # Load model configuration
@@ -83,6 +56,7 @@ def load_model_and_predict(equipment_name, input_data):
     
     return predictions
 
+
 # Split dataframe into chunks for API upload
 def split_dataframe(df, chunk_size):
     chunks = []
@@ -94,6 +68,7 @@ def split_dataframe(df, chunk_size):
         chunks.append(df[start_idx:end_idx].copy())
     
     return chunks
+
 
 # Function to post data to API
 def post_data(json_data, api_url="https://your-api-endpoint.com/data"):
@@ -116,6 +91,8 @@ def post_data(json_data, api_url="https://your-api-endpoint.com/data"):
     except Exception as e:
         print(f"Exception occurred during API upload: {e}")
         return False
+"""
+
 
 # Directory for storing RMSE and accuracy results
 results_summary = {}
@@ -128,11 +105,13 @@ start_time = time.time()
 print("Starting model training and evaluation...")
 
 # Check or create directories
-os.makedirs('test', exist_ok=True)
-os.makedirs('saved_models', exist_ok=True)
+#os.makedirs('test', exist_ok=True)
+#os.makedirs('saved_models', exist_ok=True)
 
 from elia_hackaton.config import RESULTS_DIR
 # First pass: Train models and save them
+print(RESULTS_DIR)
+
 for filename in os.listdir(RESULTS_DIR):
     if filename.endswith(".csv"):
         file_path = RESULTS_DIR / filename

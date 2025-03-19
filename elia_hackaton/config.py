@@ -6,9 +6,8 @@ BASE_DIR = Path(__file__).parent
 # Paths to various resources
 IMAGES_DIR = BASE_DIR / 'images'
 DATA_DIR = BASE_DIR / 'data'
-MODEL_DIR = BASE_DIR / 'models'
-RESULTS_DIR = BASE_DIR / 'results'
-SAVED_MODELS_DIR = BASE_DIR / 'data' / 'saved_models'
+RESULTS_DIR = DATA_DIR / 'results'
+SAVED_MODELS_DIR = DATA_DIR / 'saved_models'
 
 # ELIA PROVIDED INFORMATION
 
