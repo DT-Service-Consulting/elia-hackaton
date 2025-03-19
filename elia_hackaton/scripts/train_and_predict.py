@@ -195,7 +195,7 @@ for filename in os.listdir(RESULTS_DIR):
         train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
         
         # Initialize model and move to GPU
-        model = ImprovedPINN(input_dim=X_scaled.shape[1]).to(device)
+        model = Prometheus(input_dim=X_scaled.shape[1]).to(device)
         
         # Initialize optimizer with learning rate scheduler
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-5)
