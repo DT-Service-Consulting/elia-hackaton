@@ -110,6 +110,9 @@ class Transformer:
 
 
 class Prometheus(nn.Module):
+    """
+    Old ImprovedPINN
+    """
     def __init__(self, input_dim=5, hidden_dim=128, layers=4):
         super(Prometheus, self).__init__()
 
