@@ -15,7 +15,7 @@ import requests
 from datetime import datetime
 
 # GPU setup function
-
+from elia_hackaton.core.utils import setup_gpu
 # Call the setup function to configure GPU
 device = setup_gpu()
 
