@@ -7,13 +7,13 @@ from datetime import datetime, timedelta
 import networkx as nx
 from sklearn.cluster import KMeans
 import seaborn as sns
-
+from elia_hackaton.config import RESULTS_DIR
 
 class SubstationManager:
     def __init__(self, models_dir='saved_models', results_dir='results', prediction_dir='test'):
         """
         Initialize the Substation Management System
-        
+
         Parameters:
         -----------
         models_dir : str
@@ -24,7 +24,7 @@ class SubstationManager:
             Directory containing prediction results
         """
         self.models_dir = models_dir
-        self.results_dir = results_dir
+        self.results_dir = RESULTS_DIR
         self.prediction_dir = prediction_dir
         self.transformers = {}
         self.network = None
@@ -1053,38 +1053,3 @@ class SubstationManager:
         return report
 
 
-# Create an instance of the SubstationManager class
-manager = SubstationManager(
-    models_dir='saved_models',  # Directory containing saved transformer models
-    results_dir='results',  # Directory containing transformer data
-    prediction_dir='test'  # Directory containing prediction results
-)
-
-if __name__ == '__main__':
-    # Instantiate the manager
-    manager = SubstationManager()
-
-    # Load transformer data (this will print a message)
-    manager.load_transformer_data()
-
-    # Analyze transformer capacity
-    manager.analyze_transformer_capacity()
-
-    # Build the network model
-    manager.build_network_model()
-
-    # Identify clusters and print the result
-    clusters = manager.identify_transformer_clusters()
-    print("Transformer clusters:", clusters)
-
-    # Visualize the network and print the output file name
-    network_file = manager.visualize_network_by_city()
-    print("Network visualization saved as:", network_file)
-
-    # Prioritize reinforcements and print the result
-    priorities = manager.prioritize_reinforcements()
-    print("Reinforcement priorities:", priorities)
-
-    # Generate a summary report and print the summary
-    summary = manager.generate_summary_report()
-    print("Summary report generated at:", summary.get('timestamp'))
