@@ -1,5 +1,6 @@
 import torch
 
+
 # Compute Transformer Temperature & Risk Level
 
 def white_box_model(x, R=0.1, K=0.05):
@@ -9,9 +10,10 @@ def white_box_model(x, R=0.1, K=0.05):
     x_param = x[:, -3]  # heat run test x (assumption)
     y_param = x[:, -1]  # heat run test gradient (assumption)
 
-    white_box_pred = ((1 + R * K**2) / (1 + R)) ** x_param * \
-        (theta_or - theta_a) + K**y_param * (theta_hr - theta_or)
+    white_box_pred = ((1 + R * K ** 2) / (1 + R)) ** x_param * \
+                     (theta_or - theta_a) + K ** y_param * (theta_hr - theta_or)
     return white_box_pred
+
 
 def predict_temperature(data):
     """
@@ -30,8 +32,8 @@ def predict_temperature(data):
     """
     load_factor, ambient_temp, oil_temp, humidity, wind_speed = data
     R, x, y = 0.8, 1.2, 0.9  # Transformer Constants
-    base_temp = ((1 + R * load_factor**2) / (1 + R))**x * \
-        (oil_temp - ambient_temp) + load_factor**y * (110 - oil_temp)
+    base_temp = ((1 + R * load_factor ** 2) / (1 + R)) ** x * \
+                (oil_temp - ambient_temp) + load_factor ** y * (110 - oil_temp)
 
     X_input = torch.tensor([data], dtype=torch.float32).to(device)
     correction = model(X_input).item()
@@ -79,7 +81,6 @@ def evaluate_substation(substation):
 
 
 def physics_loss(model, x_batch, k_batch, dt_o, dt_h, x_param, y_param, R, ambient_temp):
-
     # Calculate physical constraint
     physical_values = white_box_model(k_batch, dt_o, dt_h, x_param, y_param, R)
     physical_values = physical_values + ambient_temp
