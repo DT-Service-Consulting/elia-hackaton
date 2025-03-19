@@ -76,3 +76,18 @@ def evaluate_substation(substation):
         "Current Load": data[0] * max_load,
         "Status": status
     }
+
+
+def physics_loss(model, x_batch, k_batch, dt_o, dt_h, x_param, y_param, R, ambient_temp):
+
+    # Calculate physical constraint
+    physical_values = white_box_model(k_batch, dt_o, dt_h, x_param, y_param, R)
+    physical_values = physical_values + ambient_temp
+
+    # Get model predictions
+    pred = model(x_batch)
+
+    # Calculate physics-informed loss
+    phys_loss = torch.mean((pred - physical_values) ** 2)
+
+    return phys_loss

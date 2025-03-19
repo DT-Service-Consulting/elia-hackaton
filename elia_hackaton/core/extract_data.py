@@ -113,4 +113,94 @@ for _, row in df_tfo.iterrows():
     merge_dataframes(equipment_id, df_load, df_hotspot_temperature, df_outside_temperature)
 
 
-   
+def post_data(json_data, api_url="https://your-api-endpoint.com/data"):
+    try:
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer YOUR_API_KEY'  # Replace with your actual API key
+        }
+
+        response = requests.post(api_url, data=json_data, headers=headers)
+
+        if response.status_code == 200 or response.status_code == 201:
+            print("Data successfully uploaded to API")
+            return True
+        else:
+            print(f"Error uploading data: Status code {response.status_code}")
+            print(f"Response: {response.text}")
+            return False
+
+    except Exception as e:
+        print(f"Exception occurred during API upload: {e}")
+
+        return False
+
+
+def split_dataframe(df, chunk_size):
+    chunks = []
+    num_chunks = len(df) // chunk_size + (1 if len(df) % chunk_size != 0 else 0)
+
+    for i in range(num_chunks):
+        start_idx = i * chunk_size
+        end_idx = min((i + 1) * chunk_size, len(df))
+        chunks.append(df[start_idx:end_idx].copy())
+
+    return chunks
+
+
+# Function to save model with all necessary components for prediction
+def save_model_for_prediction(model, scaler, equipment_name, parameters):
+    # Create models directory if it doesn't exist
+    os.makedirs('saved_models', exist_ok=True)
+
+    # Save model state dictionary
+    model_path = os.path.join('saved_models', f'model_{equipment_name}.pth')
+    torch.save(model.state_dict(), model_path)
+
+    # Save model architecture configuration
+    config_path = os.path.join('saved_models', f'config_{equipment_name}.json')
+    with open(config_path, 'w') as f:
+        json.dump(model.get_config(), f)
+
+    # Save scaler
+    scaler_path = os.path.join('saved_models', f'scaler_{equipment_name}.pkl')
+    with open(scaler_path, 'wb') as f:
+        pickle.dump(scaler, f)
+
+    # Save physics parameters
+    params_path = os.path.join('saved_models', f'params_{equipment_name}.json')
+    with open(params_path, 'w') as f:
+        json.dump(parameters, f)
+
+    print(f"Model and associated components saved for {equipment_name}")
+
+
+# Function to load model and make predictions
+def load_model_and_predict(equipment_name, input_data):
+    # Load model configuration
+    config_path = os.path.join('saved_models', f'config_{equipment_name}.json')
+    with open(config_path, 'r') as f:
+        config = json.load(f)
+
+    # Initialize model with saved configuration
+    model = ImprovedPINN(**config).to(device)
+
+    # Load model weights
+    model_path = os.path.join('saved_models', f'model_{equipment_name}.pth')
+    model.load_state_dict(torch.load(model_path, map_location=device))
+    model.eval()
+
+    # Load scaler
+    scaler_path = os.path.join('saved_models', f'scaler_{equipment_name}.pkl')
+    with open(scaler_path, 'rb') as f:
+        scaler = pickle.load(f)
+
+    # Scale input data
+    X_scaled = scaler.transform(input_data)
+    X_tensor = torch.tensor(X_scaled, dtype=torch.float32).to(device)
+
+    # Make prediction
+    with torch.no_grad():
+        predictions = model(X_tensor).cpu().numpy()
+
+    return predictions

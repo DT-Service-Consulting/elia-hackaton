@@ -10,4 +10,5 @@ tfo_parameters_df = pd.read_csv( DATA_DIR / 'tfo_parameters.csv')
 #equipment = pd.read_csv(DATA_DIR / 'Equipment.csv', index_col=0)
 print(tfo_parameters_df)
 
+
 exit()
